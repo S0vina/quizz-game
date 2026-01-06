@@ -1,38 +1,82 @@
 import tkinter as tk
 from tkinter import messagebox
+import json
+import time
 
 class QuizApp:
-    def __init__(self, questions, root):
+    def __init__(self, jsons, root):
         self.root = root
-        self.root.title("Quiz")
-        self.root.geometry("400x400")
+        self.root.title("Quizz")
+        self.root.geometry("400x500")
+        # O "container" onde as telas serão montadas
+        self.container = tk.Frame(self.root)
+        self.container.pack(expand=True, fill="both")
+
         self.i_question = 0 # Indice da pergunta atual
 
-        # Dados da pergunta (Poderia vir de um arquivo JSON)
-        self.questions_data = questions
+        # JSON das perguntas 
+        self.questions_data = jsons
 
-        self.botoes = []
-        self.criar_widgets()
+        self.temas_menu()
 
-    def criar_widgets(self):
-        # Texto da Pergunta
-        current_question = self.questions_data[self.i_question]["pergunta"]
-        self.label_question = tk.Label(self.root, text=current_question, 
-                                      font=("Arial", 14), pady=20, wraplength=350)
-        self.label_question.pack()
+    def clean_screens(self):
+    # Remove todos os widgets que estão dentro do container
+        for widget in self.container.winfo_children():
+            widget.destroy()
+
+    def temas_menu(self):
+        self.clean_screens()
+
+        tk.Label(self.container, text="Escolha um tema", font=("Arial", 18, "bold")).pack(pady=20)
+        
+        temas = ["Historia", "Geografia", "Programacao", "Princesas"]
+
+        for theme in temas:
+            btn = tk.Button(self.container, text=theme, width=20, height=2, bg="white", fg="black", 
+                            command=lambda t=theme: self.game_begin(t))
+            btn.pack(pady=10)
+        
+        leave_btn = tk.Button(self.container, text="Sair", width=20, height=2, bg="white", fg="black", 
+                            command=lambda : self.leave_game())
+        leave_btn.pack(pady=10)
+
+    def game_begin(self, theme):
+        self.clean_screens()
+
+        # Tela pre-jogo
+        tk.Label(self.container, text=f"Tema escolhido {theme}! Comecando o quizz...", font=("arial", 20, "bold")).pack(pady=20)
+
+        # Definindo quais perguntas do json serao usadas
+        theme_questions = self.questions_data[theme]
+
+        time.sleep(3)
+
+        self.clean_screens()
+
+        # Texto da pergunta
+        current_question = theme_questions[self.i_question]["pergunta"]
+        question = tk.Label(self.container, text=current_question, 
+                font=("Arial", 14), pady=20, wraplength=350)
+        question.pack()
 
         # Botões de Resposta
-        for i, opcao in enumerate(self.pergunta_dados["opcoes"]):
-            btn = tk.Button(self.root, text=opcao, width=30, height=2,
-                            command=lambda i=i: self.verificar_resposta(i))
+        botoes = []
+        for i, opcao in enumerate(theme_questions[self.i_question]["opcoes"]):
+            btn = tk.Button(self.container, text=opcao, width=30, height=2,
+                            command=lambda i=i: self.verificar_resposta(i, botoes))
             btn.pack(pady=5)
-            self.botoes.append(btn)
+            botoes.append(btn)
+        
+    def leave_game(self, theme):
+        pass
+
+    def criar_widgets(self):     
 
         # Mensagem de Feedback
         self.label_feedback = tk.Label(self.root, text="", font=("Arial", 12, "bold"))
         self.label_feedback.pack(pady=20)
 
-    def verificar_resposta(self, indice_escolhido):
+    def verificar_resposta(self, indice_escolhido, b_list):
         indice_correto = self.pergunta_dados["correta"]
 
         if indice_escolhido == indice_correto:
