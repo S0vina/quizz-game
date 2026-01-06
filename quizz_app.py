@@ -2,26 +2,24 @@ import tkinter as tk
 from tkinter import messagebox
 
 class QuizApp:
-    def __init__(self, root):
+    def __init__(self, questions, root):
         self.root = root
-        self.root.title("Quiz Python")
+        self.root.title("Quiz")
         self.root.geometry("400x400")
+        self.i_question = 0 # Indice da pergunta atual
 
         # Dados da pergunta (Poderia vir de um arquivo JSON)
-        self.pergunta_dados = {
-            "pergunta": "Qual é a capital da França?",
-            "opcoes": ["Londres", "Berlim", "Paris", "Madri"],
-            "correta": 2  # Índice da opção 'Paris'
-        }
+        self.questions_data = questions
 
         self.botoes = []
         self.criar_widgets()
 
     def criar_widgets(self):
         # Texto da Pergunta
-        self.label_pergunta = tk.Label(self.root, text=self.pergunta_dados["pergunta"], 
+        current_question = self.questions_data[self.i_question]["pergunta"]
+        self.label_question = tk.Label(self.root, text=current_question, 
                                       font=("Arial", 14), pady=20, wraplength=350)
-        self.label_pergunta.pack()
+        self.label_question.pack()
 
         # Botões de Resposta
         for i, opcao in enumerate(self.pergunta_dados["opcoes"]):
@@ -49,7 +47,29 @@ class QuizApp:
         for btn in self.botoes:
             btn.config(state="disabled")
 
-# Inicialização
-root = tk.Tk()
-app = QuizApp(root)
-root.mainloop()
+    def next_question(self):
+        self.i_question += 1
+        
+        if len(self.questions_data) > self.i_question:
+            current_question = self.questions_data[self.i_question]["pergunta"]
+
+            self.label_question.config(text=current_question["pergunta"])
+
+            for i, btn in enumerate(self.botoes):
+                btn.config(
+                    text=current_question["opcoes"][i],
+                    bg="white",   # Reseta o botao para a cor inicial
+                    fg="black",   # Reseta o texto do botao para a cor inicial  
+                    state="normal" # Reativa o botao
+                )
+            
+            self.label_feedback.config(text="")
+
+        else:
+            self.end_game()
+
+    def end_game(self):
+        self.label_question.config(text="Parabéns! Você concluiu o Quizz.")
+        for btn in self.botoes:
+            btn.pack_forget()
+        self.label_feedback.config("Voce concluiu o tema!")
