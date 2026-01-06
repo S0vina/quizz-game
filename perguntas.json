@@ -1,0 +1,21 @@
+{
+  "Geografia": [
+    {
+      "pergunta": "Qual a capital da França?",
+      "opcoes": ["Londres", "Paris", "Berlim", "Madri"],
+      "correta": 1
+    },
+    {
+      "pergunta": "Qual o maior país do mundo?",
+      "opcoes": ["EUA", "China", "Rússia", "Canadá"],
+      "correta": 2
+    }
+  ],
+  "Programação": [
+    {
+      "pergunta": "Qual linguagem é famosa pela cobra?",
+      "opcoes": ["Java", "C++", "Python", "Ruby"],
+      "correta": 2
+    }
+  ]
+}

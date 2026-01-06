@@ -48,3 +48,8 @@ class QuizApp:
         # Desativar botões após a resposta para evitar múltiplos cliques
         for btn in self.botoes:
             btn.config(state="disabled")
+
+# Inicialização
+root = tk.Tk()
+app = QuizApp(root)
+root.mainloop()
