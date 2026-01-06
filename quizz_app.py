@@ -4,7 +4,7 @@ import json
 import time
 
 class QuizApp:
-    def __init__(self, jsons, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Quizz")
         self.root.geometry("400x500")
@@ -14,17 +14,22 @@ class QuizApp:
 
         self.i_question = 0 # Indice da pergunta atual
 
-        # JSON das perguntas 
-        self.questions_data = jsons
+        self.theme_questions = []
 
-        self.temas_menu()
+        self.botoes = []
+        
+        self.continue_button = tk.Button()
+        self.label_question = tk.Label(text="")
+        self.label_feedback = tk.Label(text="")
+
+        self.theme_menu()
 
     def clean_screens(self):
     # Remove todos os widgets que estão dentro do container
         for widget in self.container.winfo_children():
             widget.destroy()
 
-    def temas_menu(self):
+    def theme_menu(self):
         self.clean_screens()
 
         tk.Label(self.container, text="Escolha um tema", font=("Arial", 18, "bold")).pack(pady=20)
@@ -43,41 +48,33 @@ class QuizApp:
     def game_begin(self, theme):
         self.clean_screens()
 
-        # Tela pre-jogo
-        tk.Label(self.container, text=f"Tema escolhido {theme}! Comecando o quizz...", font=("arial", 20, "bold")).pack(pady=20)
-
         # Definindo quais perguntas do json serao usadas
-        theme_questions = self.questions_data[theme]
-
-        time.sleep(3)
-
-        self.clean_screens()
+        self.theme_questions = self.load_questions(theme)
 
         # Texto da pergunta
-        current_question = theme_questions[self.i_question]["pergunta"]
-        question = tk.Label(self.container, text=current_question, 
+        self.current_question = self.theme_questions[self.i_question]["pergunta"]
+        question = tk.Label(self.container, text=self.current_question, 
                 font=("Arial", 14), pady=20, wraplength=350)
         question.pack()
 
         # Botões de Resposta
-        botoes = []
-        for i, opcao in enumerate(theme_questions[self.i_question]["opcoes"]):
+        for i, opcao in enumerate(self.theme_questions[self.i_question]["opcoes"]):
             btn = tk.Button(self.container, text=opcao, width=30, height=2,
-                            command=lambda i=i: self.verificar_resposta(i, botoes))
+                            command=lambda i=i: self.verificar_resposta(i))
             btn.pack(pady=5)
-            botoes.append(btn)
+            self.botoes.append(btn)
         
+        self.continue_button = tk.Button(self.container, text="Continuar →", 
+                               command=self.next_question(self.theme_questions), 
+                               state="disabled", bg="blue", fg="white")
+        self.continue_button.pack(pady=20)
+
     def leave_game(self, theme):
-        pass
+        pass     
 
-    def criar_widgets(self):     
+    def verificar_resposta(self, indice_escolhido):
 
-        # Mensagem de Feedback
-        self.label_feedback = tk.Label(self.root, text="", font=("Arial", 12, "bold"))
-        self.label_feedback.pack(pady=20)
-
-    def verificar_resposta(self, indice_escolhido, b_list):
-        indice_correto = self.pergunta_dados["correta"]
+        indice_correto = self.theme_questions[self.i_question]["correta"]
 
         if indice_escolhido == indice_correto:
             self.botoes[indice_escolhido].config(bg="green", fg="white")
@@ -90,14 +87,16 @@ class QuizApp:
         # Desativar botões após a resposta para evitar múltiplos cliques
         for btn in self.botoes:
             btn.config(state="disabled")
+        
+        self.continue_button.config(state="normal")
 
-    def next_question(self):
+    def next_question(self, current_question):
         self.i_question += 1
         
-        if len(self.questions_data) > self.i_question:
-            current_question = self.questions_data[self.i_question]["pergunta"]
+        if len(self.theme_questions) > self.i_question:
+            current_question = self.theme_questions[self.i_question]
 
-            self.label_question.config(text=current_question["pergunta"])
+            self.label_question.config(text=current_question)
 
             for i, btn in enumerate(self.botoes):
                 btn.config(
@@ -107,13 +106,22 @@ class QuizApp:
                     state="normal" # Reativa o botao
                 )
             
-            self.label_feedback.config(text="")
+            self.label_feedback.config(text="disable")
+
+            self.continue_button.config(state="disable")
 
         else:
-            self.end_game()
+            self.theme_menu()
 
     def end_game(self):
         self.label_question.config(text="Parabéns! Você concluiu o Quizz.")
         for btn in self.botoes:
             btn.pack_forget()
         self.label_feedback.config("Voce concluiu o tema!")
+
+    def load_questions(self, theme):
+        with open('perguntas.json', 'r', encoding='utf-8') as f:
+            todos_os_dados = json.load(f)
+    
+        # Retorna a lista de perguntas do tema ou uma lista vazia se não existir
+        return todos_os_dados.get(theme, [])
