@@ -1,7 +1,9 @@
+import sys
 import tkinter as tk
 from tkinter import messagebox
 import json
 from PIL import Image, ImageTk
+import os
 
 class QuizApp:
     def __init__(self, root):
@@ -23,7 +25,7 @@ class QuizApp:
         self.acertos = 0
         self.erros = 0
 
-        self.foto = "assets/foto.jpg"
+        self.foto = "assets/images/foto.jpg"
         self.theme_menu() # chama o menu de temas
 
     # Remove todos os widgets que estão dentro do container
@@ -162,14 +164,31 @@ class QuizApp:
 
         else:
             self.end_game(self.foto) # Tela de parabenizacao antes de voltar pro theme_menu
-
+    
     # Funcao que carrega o Json das perguntas com o tema escolhido
     def load_questions(self, theme):
-        with open('perguntas.json', 'r', encoding='utf-8') as f:
-            todos_os_dados = json.load(f)
+        # ANTES era: resource_path('perguntas.json')
+        # AGORA com a pasta data:
+        caminho_arquivo = self.resource_path('assets/data/perguntas.json') 
     
-        # Retorna a lista de perguntas do tema ou uma lista vazia se não existir
-        return todos_os_dados.get(theme, [])
+        try:
+            with open(caminho_arquivo, 'r', encoding='utf-8') as f:
+                todos_os_dados = json.load(f)
+            return todos_os_dados.get(theme, [])
+        except FileNotFoundError:
+            print(f"Erro: O arquivo não foi encontrado em {caminho_arquivo}")
+            return []
+        
+    def resource_path(self, relative_path):
+        # Retorna o caminho absoluto para o recurso, seja no modo script ou no .exe """
+        try:
+            # O PyInstaller cria uma variável temporária chamada _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            # Se não estiver no modo .exe, usa o caminho normal da pasta atual
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
     
     def show_image(self, nome_arquivo):
         # 1. Abre a imagem
