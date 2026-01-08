@@ -9,6 +9,16 @@
       "pergunta": "Qual o maior país do mundo?",
       "opcoes": ["EUA", "China", "Rússia", "Canadá"],
       "correta": 2
+    },
+    {
+      "pergunta": "Qual a melhor cidade/povoado do mundo?",
+      "opcoes": ["Brave Cana", "Teresina", "Timon City", "New York"],
+      "correta": 1
+    },
+    {
+      "pergunta": "Qual o maior oceano do mundo?",
+      "opcoes": ["Poty", "Indico", "Atlantico", "Pacifico"],
+      "correta": 3
     }
   ],
   "Programacao": [
@@ -16,6 +26,33 @@
       "pergunta": "Qual linguagem é famosa pela cobra?",
       "opcoes": ["Java", "C++", "Python", "Ruby"],
       "correta": 2
+    },
+    {
+      "pergunta": "Qual dessas ordenacoes nao e O(n²)?",
+      "opcoes": ["Selection Sort", "Heap Sort", "Insertion Sort", "Bubble Sort"],
+      "correta": 1
+    },
+    {
+      "pergunta": "Qual linguagem e a mais usada em competicoes de programacao?",
+      "opcoes": ["Assembly", "Java", "Python", "C++"],
+      "correta": 3
+    },
+    {
+      "pergunta": "Qual componente representa o cerebro de um computador?",
+      "opcoes": ["Processador", "Mouse", "Memoria RAM", "Hard Disk"],
+      "correta": 0
+    }
+  ],
+  "Video-Games" : [
+    {
+      "pergunta": "Qual o console com maior número de vendas de todos os tempos?",
+      "opcoes": ["Xbox One", "Ps1", "Nintendo Switch", "Ps2"],
+      "correta": 3
+    },
+    {
+      "pergunta": "Qual console resgatou a industria dos video-games apos sua queda em 1989?",
+      "opcoes": ["Famicon", "Atari 3000", "Ps1", "Pong"],
+      "correta": 0
     }
   ]
 }
