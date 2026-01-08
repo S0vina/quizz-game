@@ -1,7 +1,8 @@
-# Pastas temporárias do PyInstaller
+# Pastas e arquivos temporários do PyInstaller
 build/
 dist/
 *.spec
+quiz_app_exe.zip
 
 # Ambiente Virtual
 venv/
