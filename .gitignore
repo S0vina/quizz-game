@@ -1,0 +1,16 @@
+# Pastas temporárias do PyInstaller
+build/
+dist/
+*.spec
+
+# Ambiente Virtual
+venv/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
